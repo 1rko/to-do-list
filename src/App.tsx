@@ -1,26 +1,45 @@
 import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import styles from './App.module.css';
+import {Card} from "./Components/Card";
+
+type tasksArrayType = {
+    id: number
+    task: string
+    done: boolean
+}
+
+export type PropsTasksType = {
+    title: string
+    list: Array<tasksArrayType>
+}
+
+let tasksNeedsToLearn: PropsTasksType = {
+    title: 'Needs to learn',
+    list: [
+        {id: 1, task: 'HTML', done: true},
+        {id: 2, task: 'CSS', done: true},
+        {id: 3, task: 'JS', done: false}
+    ]
+}
+
+let tasksProjects: PropsTasksType = {
+    title: 'Projects',
+    list: [
+        {id: 1, task: 'ToDoList', done: true},
+        {id: 2, task: 'Social Network', done: true}
+    ]
+}
 
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+    return (
+        <>
+            <div>Cards</div>
+            <div className={styles.cardList}>
+                <Card title={tasksNeedsToLearn.title} list={tasksNeedsToLearn.list}/>
+                <Card title={tasksProjects.title} list={tasksProjects.list}/>
+            </div>
+        </>
+    );
 }
 
 export default App;
