@@ -15,7 +15,7 @@ export type TasksType = {
 
 export type FilterType = 'all' | 'active' | 'done'
 
-let tasksProjects: TasksType = {
+let tasksProjects: TasksType = {                    //
     title: 'Projects',
     tasks: [
         {id: 1, task: 'ToDoList', done: true},
