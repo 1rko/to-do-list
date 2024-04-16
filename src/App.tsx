@@ -1,28 +1,21 @@
-import React from 'react';
+import React, {useState} from 'react';
 import styles from './App.module.css';
 import {Card} from "./Components/Card";
 
-type tasksArrayType = {
+export type TasksArrayType = {
     id: number
     task: string
     done: boolean
 }
 
-export type PropsTasksType = {
+export type TasksType = {
     title: string
-    tasks: Array<tasksArrayType>
+    tasks: Array<TasksArrayType>
 }
 
-let tasksNeedsToLearn: PropsTasksType = {
-    title: 'Needs to learn',
-    tasks: [
-        {id: 1, task: 'HTML', done: true},
-        {id: 2, task: 'CSS', done: true},
-        {id: 3, task: 'JS', done: false}
-    ]
-}
+export type FilterType = 'all' | 'active' | 'done'
 
-let tasksProjects: PropsTasksType = {
+let tasksProjects: TasksType = {
     title: 'Projects',
     tasks: [
         {id: 1, task: 'ToDoList', done: true},
@@ -32,12 +25,58 @@ let tasksProjects: PropsTasksType = {
 
 function App() {
 
+    let tasksNeedsToLearn: TasksType = {
+        title: 'Needs to learn',
+        tasks: [
+            {id: 1, task: 'HTML', done: true},
+            {id: 2, task: 'CSS', done: true},
+            {id: 3, task: 'JS', done: false}
+        ]
+    }
+
+    let [tasks, setTasks] = useState<TasksType>(tasksNeedsToLearn)
+    let [filter, setFilter] = useState<FilterType>('all')
+
+    function removeTask(id: number) {
+        setTasks(() => {
+            return {
+                ...tasks,
+                tasks: tasks.tasks.filter(t => t.id !== id)
+            }
+        })
+    }
+
+    function setTaskFilter(filter: FilterType) {
+        setFilter(filter)
+    }
+
+    let tasksForToDoList=tasks
+
+    if (filter === 'active') {
+        tasksForToDoList = {
+            ...tasksForToDoList,
+            tasks: tasksForToDoList.tasks.filter(t => t.done === false)
+        }
+    }
+
+    if (filter === 'done') {
+        tasksForToDoList = {
+            ...tasksForToDoList,
+            tasks: tasksForToDoList.tasks.filter(t => t.done === true)
+        }
+    }
+
     return (
         <>
             <div>Cards</div>
             <div className={styles.cardList}>
-                <Card title={tasksNeedsToLearn.title} tasks={tasksNeedsToLearn.tasks}/>
-                <Card title={tasksProjects.title} tasks={tasksProjects.tasks}/>
+                <Card
+                    title={tasksForToDoList.title}
+                    tasks={tasksForToDoList.tasks}
+                    removeTask={removeTask}
+                    setTaskFilter={setTaskFilter}
+                />
+                {/*<Card title={tasksProjects.title} tasks={tasksProjects.tasks}/>*/}
             </div>
         </>
     );
