@@ -10,12 +10,12 @@ type tasksArrayType = {
 
 export type PropsTasksType = {
     title: string
-    list: Array<tasksArrayType>
+    tasks: Array<tasksArrayType>
 }
 
 let tasksNeedsToLearn: PropsTasksType = {
     title: 'Needs to learn',
-    list: [
+    tasks: [
         {id: 1, task: 'HTML', done: true},
         {id: 2, task: 'CSS', done: true},
         {id: 3, task: 'JS', done: false}
@@ -24,19 +24,20 @@ let tasksNeedsToLearn: PropsTasksType = {
 
 let tasksProjects: PropsTasksType = {
     title: 'Projects',
-    list: [
+    tasks: [
         {id: 1, task: 'ToDoList', done: true},
         {id: 2, task: 'Social Network', done: true}
     ]
 }
 
 function App() {
+
     return (
         <>
             <div>Cards</div>
             <div className={styles.cardList}>
-                <Card title={tasksNeedsToLearn.title} list={tasksNeedsToLearn.list}/>
-                <Card title={tasksProjects.title} list={tasksProjects.list}/>
+                <Card title={tasksNeedsToLearn.title} tasks={tasksNeedsToLearn.tasks}/>
+                <Card title={tasksProjects.title} tasks={tasksProjects.tasks}/>
             </div>
         </>
     );

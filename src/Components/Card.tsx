@@ -6,7 +6,7 @@ export const Card: React.FC<PropsTasksType> = (props) => {
     return (
         <div className={styles.card}>
             <h1> {props.title}</h1>
-            {props.list.map(li => {
+            {props.tasks.map(li => {
                     return (
                         <li key={li.id}>
                             <input type="checkbox" checked={li.done}/>
@@ -14,6 +14,9 @@ export const Card: React.FC<PropsTasksType> = (props) => {
                         </li>)
                 }
             )}
+            <button>All</button>
+            <button>Active</button>
+            <button>Finished</button>
 
         </div>)
 }
