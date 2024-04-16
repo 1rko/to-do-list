@@ -10,7 +10,7 @@ export const Card: React.FC<PropsTasksType> = (props) => {
                     return (
                         <li key={li.id}>
                             <input type="checkbox" checked={li.done}/>
-                            <input type="text" value={li.task}/>
+                            <span> {li.task} </span>
                         </li>)
                 }
             )}
