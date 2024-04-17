@@ -1,9 +1,10 @@
 import React, {useState} from 'react';
 import styles from './App.module.css';
 import {Card} from "./Components/Card";
+import { v4 as uuidv4 } from 'uuid';
 
 export type TasksArrayType = {
-    id: number
+    id: string
     task: string
     done: boolean
 }
@@ -18,8 +19,8 @@ export type FilterType = 'all' | 'active' | 'done'
 let tasksProjects: TasksType = {                    //
     title: 'Projects',
     tasks: [
-        {id: 1, task: 'ToDoList', done: true},
-        {id: 2, task: 'Social Network', done: true}
+        {id: "1", task: 'ToDoList', done: true},
+        {id: "2", task: 'Social Network', done: true}
     ]
 }
 
@@ -28,16 +29,16 @@ function App() {
     let tasksNeedsToLearn: TasksType = {
         title: 'Needs to learn',
         tasks: [
-            {id: 1, task: 'HTML', done: true},
-            {id: 2, task: 'CSS', done: true},
-            {id: 3, task: 'JS', done: false}
+            {id: '1', task: 'HTML', done: true},
+            {id: "2", task: 'CSS', done: true},
+            {id: "3", task: 'JS', done: false}
         ]
     }
 
     let [tasks, setTasks] = useState<TasksType>(tasksNeedsToLearn)
     let [filter, setFilter] = useState<FilterType>('all')
 
-    function removeTask(id: number) {
+    function removeTask(id: string) {
         setTasks(() => {
             return {
                 ...tasks,
@@ -50,7 +51,16 @@ function App() {
         setFilter(filter)
     }
 
-    let tasksForToDoList=tasks
+    function addNewTask(newTask: string) {
+        setTasks(prevTasks => {
+            return {
+                ...prevTasks,
+                tasks: [{id: uuidv4(), task: newTask, done: false} , ...tasks.tasks]
+            }
+        })
+    }
+
+    let tasksForToDoList = tasks
 
     if (filter === 'active') {
         tasksForToDoList = {
@@ -75,6 +85,7 @@ function App() {
                     tasks={tasksForToDoList.tasks}
                     removeTask={removeTask}
                     setTaskFilter={setTaskFilter}
+                    addNewTask={addNewTask}
                 />
                 {/*<Card title={tasksProjects.title} tasks={tasksProjects.tasks}/>*/}
             </div>
