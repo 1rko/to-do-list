@@ -14,7 +14,7 @@ export type TasksType = {
     tasks: Array<TasksArrayType>
 }
 
-export type FilterType = 'all' | 'active' | 'done'
+export type FilterType = 'all' | 'active' | 'completed'
 
 let tasksProjects: TasksType = {                    //
     title: 'Projects',
@@ -69,7 +69,7 @@ function App() {
         }
     }
 
-    if (filter === 'done') {
+    if (filter === 'completed') {
         tasksForToDoList = {
             ...tasksForToDoList,
             tasks: tasksForToDoList.tasks.filter(t => t.done === true)
