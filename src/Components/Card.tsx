@@ -1,5 +1,5 @@
 import React, {KeyboardEvent, useState} from 'react'
-import {FilterType, TasksArrayType} from "../App";
+import {FilterType, TasksArrayType, tasksWithCardTitleType} from "../App";
 import styles from './Card.module.css'
 
 export type PropsTasksType = {
@@ -9,11 +9,14 @@ export type PropsTasksType = {
     removeTask: (id: string) => void
     setTaskFilter: (filter: FilterType) => void
     addNewTask: (newTask: string) => void
+    isCompletedChangeTask: (tasks: tasksWithCardTitleType, taskId: string, isCompleted: boolean) => void
 }
 
 export const Card: React.FC<PropsTasksType> = (props) => {
     let [newTask, setNewTask] = useState('')
     let [error, setError] = useState<null | string>(null)
+    let [activeFilter, setActiveFilter] = useState<FilterType>('all')
+    //let [isCompletedTask, setisCompletedTask] = useState<boolean>(false)
 
     const newTaskChangeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
         setNewTask(e.currentTarget.value)
@@ -36,9 +39,18 @@ export const Card: React.FC<PropsTasksType> = (props) => {
         }
     }
 
-    const onAllTaskFilter = () => {props.setTaskFilter('all')}
-    const onActiveTaskFilter = () => {props.setTaskFilter('active')}
-    const onCompletedTaskFilter = () => {props.setTaskFilter('completed')}
+    const onAllTaskFilter = () => {
+        props.setTaskFilter('all')
+        setActiveFilter('all')
+    }
+    const onActiveTaskFilter = () => {
+        props.setTaskFilter('active')
+        setActiveFilter('active')
+    }
+    const onCompletedTaskFilter = () => {
+        props.setTaskFilter('completed')
+        setActiveFilter('completed')
+    }
 
     return (
         <div className={styles.card}>
@@ -52,19 +64,35 @@ export const Card: React.FC<PropsTasksType> = (props) => {
 
             <button onClick={onAddNewTaskHandler}>+</button>
             {error && <div className={styles.errorText}>{error} </div>}
-            {props.tasks.map(li => {
-                const onRemoveTaskHandler = () => {props.removeTask(li.id)}
+
+            {props.tasks.map((li, ind, arr) => {
+                    const onRemoveTaskHandler = () => {
+                        props.removeTask(li.id)
+                    }
+                    const onIsCompletedClick = () => {
+                        props.isCompletedChangeTask({title: props.title, tasks: arr}, li.id, li.done)
+
+                    }
                     return (
                         <li key={li.id}>
-                            <input type="checkbox" checked={li.done}/>
+                            <input type="checkbox" checked={li.done} onChange={onIsCompletedClick}/>
                             <span> {li.task} </span>
                             <button onClick={onRemoveTaskHandler}>x</button>
                         </li>)
                 }
             )}
-            <button onClick={onAllTaskFilter}>All</button>
-            <button onClick={onActiveTaskFilter}>Active</button>
-            <button onClick={onCompletedTaskFilter}>Finished</button>
+            <button onClick={onAllTaskFilter}
+                    className={(activeFilter === 'all') ? styles.activeButton : ''}>
+                All
+            </button>
+            <button onClick={onActiveTaskFilter}
+                    className={(activeFilter === 'active') ? styles.activeButton : ''}>
+                Active
+            </button>
+            <button onClick={onCompletedTaskFilter}
+                    className={(activeFilter === 'completed') ? styles.activeButton : ''}>
+                Finished
+            </button>
 
         </div>)
 }

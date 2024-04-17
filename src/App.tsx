@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
 import styles from './App.module.css';
 import {Card} from "./Components/Card";
-import { v4 as uuidv4 } from 'uuid';
+import {v4 as uuidv4} from 'uuid';
 
 export type TasksArrayType = {
     id: string
@@ -9,14 +9,14 @@ export type TasksArrayType = {
     done: boolean
 }
 
-export type TasksType = {
+export type tasksWithCardTitleType = {
     title: string
     tasks: Array<TasksArrayType>
 }
 
 export type FilterType = 'all' | 'active' | 'completed'
 
-let tasksProjects: TasksType = {                    //
+let tasksProjects: tasksWithCardTitleType = {                    //
     title: 'Projects',
     tasks: [
         {id: "1", task: 'ToDoList', done: true},
@@ -26,7 +26,7 @@ let tasksProjects: TasksType = {                    //
 
 function App() {
 
-    let tasksNeedsToLearn: TasksType = {
+    let tasksNeedsToLearn: tasksWithCardTitleType = {
         title: 'Needs to learn',
         tasks: [
             {id: '1', task: 'HTML', done: true},
@@ -35,14 +35,14 @@ function App() {
         ]
     }
 
-    let [tasks, setTasks] = useState<TasksType>(tasksNeedsToLearn)
+    let [tasksWithCardTitle, setTasksWithCardTitle] = useState<tasksWithCardTitleType>(tasksNeedsToLearn)
     let [filter, setFilter] = useState<FilterType>('all')
 
     function removeTask(id: string) {
-        setTasks(() => {
+        setTasksWithCardTitle(() => {
             return {
-                ...tasks,
-                tasks: tasks.tasks.filter(t => t.id !== id)
+                ...tasksWithCardTitle,
+                tasks: tasksWithCardTitle.tasks.filter(t => t.id !== id)
             }
         })
     }
@@ -52,15 +52,34 @@ function App() {
     }
 
     function addNewTask(newTask: string) {
-        setTasks(prevTasks => {
+        setTasksWithCardTitle(prevTasks => {
             return {
                 ...prevTasks,
-                tasks: [{id: uuidv4(), task: newTask, done: false} , ...tasks.tasks]
+                tasks: [{id: uuidv4(), task: newTask, done: false}, ...tasksWithCardTitle.tasks]
             }
         })
     }
 
-    let tasksForToDoList = tasks
+    function isCompletedChangeTask(allTasks: tasksWithCardTitleType, taskId: string, isCompleted: boolean) {
+        setTasksWithCardTitle(prevTasks => {
+            let changedArray = tasksWithCardTitle.tasks.map((t, ind) => {
+                if (t.id === taskId) return {id: taskId, task: t.task, done: !t.done}
+                else {return t}
+            })
+
+            /*console.log(changedArray)
+            console.log({
+                ...allTasks,
+                tasks: [...changedArray]
+            })*/
+            return {
+                ...prevTasks,
+                tasks: [...changedArray]
+            }
+        })
+    }
+
+    let tasksForToDoList = tasksWithCardTitle
 
     if (filter === 'active') {
         tasksForToDoList = {
@@ -86,6 +105,7 @@ function App() {
                     removeTask={removeTask}
                     setTaskFilter={setTaskFilter}
                     addNewTask={addNewTask}
+                    isCompletedChangeTask={isCompletedChangeTask}
                 />
                 {/*<Card title={tasksProjects.title} tasks={tasksProjects.tasks}/>*/}
             </div>
