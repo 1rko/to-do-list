@@ -1,22 +1,23 @@
-import React, {KeyboardEvent, useState} from 'react'
-import {FilterType, TasksArrayType, tasksWithCardTitleType} from "../App";
+import React, {useState} from 'react'
+import {FilterType, TasksArrayType} from "../App";
 import styles from './Card.module.css'
 
 export type PropsTasksType = {
     title: string
     tasks: Array<TasksArrayType>
+    filter: FilterType
+    toDoListId: string
 
-    removeTask: (id: string) => void
-    setTaskFilter: (filter: FilterType) => void
-    addNewTask: (newTask: string) => void
-    isCompletedChangeTask: (tasks: tasksWithCardTitleType, taskId: string, isCompleted: boolean) => void
+    removeTask: (id: string, todolistId: string) => void
+    setTaskFilter: (value: FilterType, toDoListId: string) => void
+    addNewTask: (newTask: string, todolistId: string) => void
+    isCompletedChangeTask: (tasks: Array<TasksArrayType>, taskId: string, todolistId: string) => void
+    removeTodolist: (todolistId: string) => void
 }
 
 export const Card: React.FC<PropsTasksType> = (props) => {
     let [newTask, setNewTask] = useState('')
     let [error, setError] = useState<null | string>(null)
-    let [activeFilter, setActiveFilter] = useState<FilterType>('all')
-    //let [isCompletedTask, setisCompletedTask] = useState<boolean>(false)
 
     const newTaskChangeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
         setNewTask(e.currentTarget.value)
@@ -28,7 +29,7 @@ export const Card: React.FC<PropsTasksType> = (props) => {
             return
         }
 
-        props.addNewTask(newTask)
+        props.addNewTask(newTask, props.toDoListId)
         setNewTask('')
     }
 
@@ -40,21 +41,22 @@ export const Card: React.FC<PropsTasksType> = (props) => {
     }
 
     const onAllTaskFilter = () => {
-        props.setTaskFilter('all')
-        setActiveFilter('all')
+        props.setTaskFilter('all', props.toDoListId)
     }
     const onActiveTaskFilter = () => {
-        props.setTaskFilter('active')
-        setActiveFilter('active')
+        props.setTaskFilter('active', props.toDoListId)
     }
     const onCompletedTaskFilter = () => {
-        props.setTaskFilter('completed')
-        setActiveFilter('completed')
+        props.setTaskFilter('completed', props.toDoListId)
+    }
+
+    const removeTodolist = () => {
+        props.removeTodolist( props.toDoListId)
     }
 
     return (
         <div className={styles.card}>
-            <h1> {props.title}</h1>
+            <h1> {props.title} <button onClick={removeTodolist}>х</button> </h1>
             <input value={newTask}
                    className={error ? styles.errorInput : ''}
                    placeholder={'Новая задача'}
@@ -67,11 +69,11 @@ export const Card: React.FC<PropsTasksType> = (props) => {
 
             {props.tasks.map((li, ind, arr) => {
                     const onRemoveTaskHandler = () => {
-                        props.removeTask(li.id)
+                        props.removeTask(li.id, props.toDoListId)
                     }
-                    const onIsCompletedClick = () => {
-                        props.isCompletedChangeTask({title: props.title, tasks: arr}, li.id, li.done)
 
+                    const onIsCompletedClick = () => {
+                        props.isCompletedChangeTask(props.tasks, li.id, props.toDoListId)
                     }
                     return (
                         <li key={li.id}>
@@ -82,16 +84,16 @@ export const Card: React.FC<PropsTasksType> = (props) => {
                 }
             )}
             <button onClick={onAllTaskFilter}
-                    className={(activeFilter === 'all') ? styles.activeButton : ''}>
+                    className={(props.filter === 'all') ? styles.activeButton : ''}>
                 All
             </button>
             <button onClick={onActiveTaskFilter}
-                    className={(activeFilter === 'active') ? styles.activeButton : ''}>
+                    className={(props.filter === 'active') ? styles.activeButton : ''}>
                 Active
             </button>
             <button onClick={onCompletedTaskFilter}
-                    className={(activeFilter === 'completed') ? styles.activeButton : ''}>
-                Finished
+                    className={(props.filter === 'completed') ? styles.activeButton : ''}>
+                Completed
             </button>
 
         </div>)
