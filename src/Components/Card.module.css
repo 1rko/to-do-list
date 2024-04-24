@@ -17,3 +17,8 @@ li {
 .activeButton{
     background-color: aquamarine;
 }
+
+.complitedTask{
+    color: darkgrey;
+    text-decoration: line-through;
+}

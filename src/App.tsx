@@ -2,6 +2,7 @@ import React, {useState} from 'react';
 import styles from './App.module.css';
 import {Card} from "./Components/Card";
 import {v4 as uuidv4} from 'uuid';
+import {AddItemForm} from "./Components/AddItemForm";
 
 export type TasksArrayType = {
     id: string
@@ -17,6 +18,10 @@ export type toDoListsType = {
     filter: FilterType
 }
 
+export type AllTasksType ={
+    [key: string]: Array<TasksArrayType>
+}
+
 function App() {
 
     let toDolistId1 = uuidv4()
@@ -27,16 +32,16 @@ function App() {
         {id: toDolistId2, title: 'Needs to learn', filter: 'all'},
     ])
 
-    let [allTasks, setAllTasks] = useState({
+    let [allTasks, setAllTasks] = useState<AllTasksType>({
         [toDolistId1]: [
             {id: uuidv4(), task: 'SocialNetwork', done: true},
             {id: uuidv4(), task: 'ToDoList', done: true},
-        ] as Array<TasksArrayType>,
+        ],
         [toDolistId2]: [
             {id: uuidv4(), task: 'HTML', done: true},
             {id: uuidv4(), task: 'CSS', done: true},
             {id: uuidv4(), task: 'JS', done: false}
-        ] as Array<TasksArrayType>
+        ]
     })
 
     function removeTask(taskId: string, todolistId: string) {
@@ -50,11 +55,11 @@ function App() {
         })
     }
 
-    function addNewTask(newTask: string, todolistId: string) {
+    function addNewTask(title: string, todolistId: string) {
         setAllTasks(() => {
                 return {
                     ...allTasks,
-                    [todolistId]: [{id: uuidv4(), task: newTask, done: false}, ...allTasks[todolistId]]
+                    [todolistId]: [{id: uuidv4(), task: title, done: false}, ...allTasks[todolistId]]
                 }
             }
         )
@@ -78,10 +83,20 @@ function App() {
 
     }
 
+    function addNewToDoList(title: string) {
+        let newToDoList: toDoListsType ={
+            id: uuidv4(), title: title, filter: 'all'
+        }
+        setToDoLists([newToDoList ,...toDoLists])
+        setAllTasks({...allTasks, [newToDoList.id]: []})
+    }
+
     return (
         <>
             <div>Cards</div>
             <div className={styles.cardList}>
+
+                <AddItemForm addNewItem={addNewToDoList}/>
 
                 {toDoLists.map(tDL => {
 
