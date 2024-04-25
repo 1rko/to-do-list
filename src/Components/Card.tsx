@@ -2,6 +2,7 @@ import React from 'react'
 import {FilterType, TasksArrayType} from "../App";
 import styles from './Card.module.css'
 import {AddItemForm} from "./AddItemForm";
+import {EditableSpan} from "./EditableSpan";
 
 export type PropsTasksType = {
     title: string
@@ -12,8 +13,10 @@ export type PropsTasksType = {
     removeTask: (id: string, todolistId: string) => void
     setTaskFilter: (value: FilterType, toDoListId: string) => void
     addNewTask: (newTask: string, todolistId: string) => void
+    editTask: (idTask: string, newTask: string, todolistId: string) => void
     isCompletedChangeTask: (tasks: Array<TasksArrayType>, taskId: string, todolistId: string) => void
     removeTodolist: (todolistId: string) => void
+    editListTitle: (title:string, todolistId: string) => void
 }
 
 export const Card: React.FC<PropsTasksType> = (props) => {
@@ -32,13 +35,17 @@ export const Card: React.FC<PropsTasksType> = (props) => {
         props.removeTodolist(props.toDoListId)
     }
 
-    const addTask = (title:string) => {
+    const addTask = (title: string) => {
         props.addNewTask(title, props.toDoListId)
+    }
+
+    const editListTitle = (title: string) => {
+       props.editListTitle(title, props.toDoListId)
     }
 
     return (
         <div className={styles.card}>
-            <h1> {props.title}
+            <h1>  <EditableSpan title={props.title} onFinishEdit={editListTitle}/>
                 <button onClick={removeTodolist}>х</button>
             </h1>
             <AddItemForm addNewItem={addTask}/>
@@ -51,10 +58,15 @@ export const Card: React.FC<PropsTasksType> = (props) => {
                     const onIsCompletedClick = () => {
                         props.isCompletedChangeTask(props.tasks, li.id, props.toDoListId)
                     }
+
+                    const editTask = (title: string) => {
+                        props.editTask(li.id, title, props.toDoListId)
+                    }
+
                     return (
-                        <li key={li.id} className={li.done? styles.complitedTask:''}>
+                        <li key={li.id} className={li.done ? styles.complitedTask : ''}>
                             <input type="checkbox" checked={li.done} onChange={onIsCompletedClick}/>
-                            <span> {li.task} </span>
+                            <EditableSpan title={li.task} onFinishEdit={editTask}/>
                             <button onClick={onRemoveTaskHandler}>x</button>
                         </li>)
                 }

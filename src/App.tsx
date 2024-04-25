@@ -18,7 +18,7 @@ export type toDoListsType = {
     filter: FilterType
 }
 
-export type AllTasksType ={
+export type AllTasksType = {
     [key: string]: Array<TasksArrayType>
 }
 
@@ -65,6 +65,17 @@ function App() {
         )
     }
 
+    function editTask(idTask: string, title: string, todolistId: string) {
+        setAllTasks(() => {
+                let editableTask = allTasks[todolistId].find(task => task.id === idTask)
+                if (editableTask) {
+                    editableTask.task = title
+                }
+                return {...allTasks}
+            }
+        )
+    }
+
     function isCompletedChangeTask(tasks: Array<TasksArrayType>, taskId: string, todolistId: string) {
         let changedArray = tasks.map((t) => {
             if (t.id === taskId) return {id: taskId, task: t.task, done: !t.done}
@@ -84,10 +95,10 @@ function App() {
     }
 
     function addNewToDoList(title: string) {
-        let newToDoList: toDoListsType ={
+        let newToDoList: toDoListsType = {
             id: uuidv4(), title: title, filter: 'all'
         }
-        setToDoLists([newToDoList ,...toDoLists])
+        setToDoLists([newToDoList, ...toDoLists])
         setAllTasks({...allTasks, [newToDoList.id]: []})
     }
 
@@ -129,6 +140,14 @@ function App() {
                         }
                     }
 
+                    function editTodolistTitle(title: string, toDoListId: string) {
+                        let findedToDoList = toDoLists.find(tdl => tdl.id === toDoListId)
+                        if (findedToDoList) {
+                            findedToDoList.title = title
+                        }
+                        setToDoLists([...toDoLists])
+                    }
+
                     return (<Card
                         key={tDL.id}
                         toDoListId={tDL.id}
@@ -138,8 +157,10 @@ function App() {
                         filter={tDL.filter}
                         setTaskFilter={setTaskFilter}
                         addNewTask={addNewTask}
+                        editTask={editTask}
                         isCompletedChangeTask={isCompletedChangeTask}
                         removeTodolist={removeTodolist}
+                        editListTitle={editTodolistTitle}
                     />)
                 })
                 }
