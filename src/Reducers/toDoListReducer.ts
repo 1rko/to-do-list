@@ -12,5 +12,5 @@ let state: Array<toDoListsType> = [
 
 test("new ToDoList must be added", () => {
     let newState = toDoListReducer(state, {type: 'ADD-NEW-TO-DO-LIST', title: 'New toDolist'})
-    expect(newState.);
+    expect(newState);
 });
