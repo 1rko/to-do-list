@@ -3,6 +3,8 @@ import {FilterType, TasksArrayType} from "../App";
 import styles from './Card.module.css'
 import {AddItemForm} from "./AddItemForm";
 import {EditableSpan} from "./EditableSpan";
+import {Button, Checkbox, IconButton} from "@mui/material";
+import DeleteIcon from '@mui/icons-material/Delete';
 
 export type PropsTasksType = {
     title: string
@@ -16,7 +18,7 @@ export type PropsTasksType = {
     editTask: (idTask: string, newTask: string, todolistId: string) => void
     isCompletedChangeTask: (tasks: Array<TasksArrayType>, taskId: string, todolistId: string) => void
     removeTodolist: (todolistId: string) => void
-    editListTitle: (title:string, todolistId: string) => void
+    editListTitle: (title: string, todolistId: string) => void
 }
 
 export const Card: React.FC<PropsTasksType> = (props) => {
@@ -40,13 +42,19 @@ export const Card: React.FC<PropsTasksType> = (props) => {
     }
 
     const editListTitle = (title: string) => {
-       props.editListTitle(title, props.toDoListId)
+        props.editListTitle(title, props.toDoListId)
     }
 
     return (
         <div className={styles.card}>
-            <h1>  <EditableSpan title={props.title} onFinishEdit={editListTitle}/>
-                <button onClick={removeTodolist}>х</button>
+            <h1><EditableSpan title={props.title} onFinishEdit={editListTitle}/>
+                <IconButton aria-label="delete"
+                            onClick={removeTodolist}
+                            size={'small'}
+                            color="primary"
+                >
+                    <DeleteIcon/>
+                </IconButton>
             </h1>
             <AddItemForm addNewItem={addTask}/>
 
@@ -65,24 +73,33 @@ export const Card: React.FC<PropsTasksType> = (props) => {
 
                     return (
                         <li key={li.id} className={li.done ? styles.complitedTask : ''}>
-                            <input type="checkbox" checked={li.done} onChange={onIsCompletedClick}/>
+                            <Checkbox checked={li.done} onChange={onIsCompletedClick}/>
                             <EditableSpan title={li.task} onFinishEdit={editTask}/>
-                            <button onClick={onRemoveTaskHandler}>x</button>
+                            <IconButton aria-label="delete"
+                                        onClick={onRemoveTaskHandler}
+                                        size={'small'}
+                                        color="primary"
+                            >
+                                <DeleteIcon/>
+                            </IconButton>
                         </li>)
                 }
             )}
-            <button onClick={onAllTaskFilter}
-                    className={(props.filter === 'all') ? styles.activeButton : ''}>
+            <Button onClick={onAllTaskFilter}
+                    variant={(props.filter === 'all') ? 'contained' : 'outlined'}
+                    size="small">
                 All
-            </button>
-            <button onClick={onActiveTaskFilter}
-                    className={(props.filter === 'active') ? styles.activeButton : ''}>
+            </Button>
+            <Button onClick={onActiveTaskFilter}
+                    variant={(props.filter === 'active') ? 'contained' : 'outlined'}
+                    size="small">
                 Active
-            </button>
-            <button onClick={onCompletedTaskFilter}
-                    className={(props.filter === 'completed') ? styles.activeButton : ''}>
+            </Button>
+            <Button onClick={onCompletedTaskFilter}
+                    variant={(props.filter === 'completed') ? 'contained' : 'outlined'}
+                    size="small">
                 Completed
-            </button>
+            </Button>
 
         </div>)
 }

@@ -3,6 +3,7 @@ import styles from './App.module.css';
 import {Card} from "./Components/Card";
 import {v4 as uuidv4} from 'uuid';
 import {AddItemForm} from "./Components/AddItemForm";
+import {Grid} from '@mui/material';
 
 export type TasksArrayType = {
     id: string
@@ -105,66 +106,77 @@ function App() {
     return (
         <>
             <div>Cards</div>
+
             <div className={styles.cardList}>
 
                 <AddItemForm addNewItem={addNewToDoList}/>
+                <Grid container>
+                    {toDoLists.map(tDL => {
 
-                {toDoLists.map(tDL => {
+                        function setTaskFilter(value: FilterType, toDoListId: string) {
+                            let findedToDoList = toDoLists.find(tdl => tdl.id === toDoListId)
+                            if (findedToDoList) {
+                                findedToDoList.filter = value                 //меняем фильтр в исходном массиве
+                                setToDoLists([...toDoLists])            //сетаем исходный массив
+                            }
+                        };
 
-                    function setTaskFilter(value: FilterType, toDoListId: string) {
-                        let findedToDoList = toDoLists.find(tdl => tdl.id === toDoListId)
-                        if (findedToDoList) {
-                            findedToDoList.filter = value                 //меняем фильтр в исходном массиве
-                            setToDoLists([...toDoLists])            //сетаем исходный массив
+                        let tasksForToDoList = allTasks[tDL.id]
+
+                        if (tDL.filter === 'active') {
+                            tasksForToDoList =
+                                [...tasksForToDoList.filter(t => t.done === false)]
                         }
-                    };
 
-                    let tasksForToDoList = allTasks[tDL.id]
-
-                    if (tDL.filter === 'active') {
-                        tasksForToDoList =
-                            [...tasksForToDoList.filter(t => t.done === false)]
-                    }
-
-                    if (tDL.filter === 'completed') {
-                        tasksForToDoList =
-                            [...tasksForToDoList.filter(t => t.done === true)]
-                    }
-
-                    function removeTodolist(toDoListId: string) {
-                        let filteredToDoList = toDoLists.filter(tdl => tdl.id !== toDoListId)
-                        if (filteredToDoList) {
-                            setToDoLists([...filteredToDoList])
-                            delete allTasks[toDoListId]
-                            setAllTasks(allTasks)
+                        if (tDL.filter === 'completed') {
+                            tasksForToDoList =
+                                [...tasksForToDoList.filter(t => t.done === true)]
                         }
-                    }
 
-                    function editTodolistTitle(title: string, toDoListId: string) {
-                        let findedToDoList = toDoLists.find(tdl => tdl.id === toDoListId)
-                        if (findedToDoList) {
-                            findedToDoList.title = title
+                        function removeTodolist(toDoListId: string) {
+                            let filteredToDoList = toDoLists.filter(tdl => tdl.id !== toDoListId)
+                            if (filteredToDoList) {
+                                setToDoLists([...filteredToDoList])
+                                delete allTasks[toDoListId]
+                                setAllTasks(allTasks)
+                            }
                         }
-                        setToDoLists([...toDoLists])
-                    }
 
-                    return (<Card
-                        key={tDL.id}
-                        toDoListId={tDL.id}
-                        title={tDL.title}
-                        tasks={tasksForToDoList}
-                        removeTask={removeTask}
-                        filter={tDL.filter}
-                        setTaskFilter={setTaskFilter}
-                        addNewTask={addNewTask}
-                        editTask={editTask}
-                        isCompletedChangeTask={isCompletedChangeTask}
-                        removeTodolist={removeTodolist}
-                        editListTitle={editTodolistTitle}
-                    />)
-                })
-                }
+                        function editTodolistTitle(title: string, toDoListId: string) {
+                            let findedToDoList = toDoLists.find(tdl => tdl.id === toDoListId)
+                            if (findedToDoList) {
+                                findedToDoList.title = title
+                            }
+                            setToDoLists([...toDoLists])
+                        }
+
+                        return (
+                            <Grid item xs={12} sm={4} md={3}
+                                  display="flex"
+                                  justifyContent="center"
+                                  key={tDL.id}>
+
+                                <Card
+                                    key={tDL.id}
+                                    toDoListId={tDL.id}
+                                    title={tDL.title}
+                                    tasks={tasksForToDoList}
+                                    removeTask={removeTask}
+                                    filter={tDL.filter}
+                                    setTaskFilter={setTaskFilter}
+                                    addNewTask={addNewTask}
+                                    editTask={editTask}
+                                    isCompletedChangeTask={isCompletedChangeTask}
+                                    removeTodolist={removeTodolist}
+                                    editListTitle={editTodolistTitle}
+                                />
+
+                            </Grid>)
+                    })
+                    }
+                </Grid>
             </div>
+
         </>
     );
 }
