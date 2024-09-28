@@ -66,9 +66,9 @@ function App() {
         )
     }
 
-    function editTask(idTask: string, title: string, todolistId: string) {
+    function editTask(taskId: string, title: string, todolistId: string) {
         setAllTasks(() => {
-                let editableTask = allTasks[todolistId].find(task => task.id === idTask)
+                let editableTask = allTasks[todolistId].find(task => task.id === taskId)
                 if (editableTask) {
                     editableTask.task = title
                 }
@@ -77,8 +77,8 @@ function App() {
         )
     }
 
-    function isCompletedChangeTask(tasks: Array<TasksArrayType>, taskId: string, todolistId: string) {
-        let changedArray = tasks.map((t) => {
+    function isCompletedChangeTask(/*tasks: Array<TasksArrayType>,*/ taskId: string, todolistId: string) {
+        let changedArray = allTasks[todolistId].map((t) => {
             if (t.id === taskId) return {id: taskId, task: t.task, done: !t.done}
             else {
                 return t
@@ -92,7 +92,6 @@ function App() {
                 }
             }
         )
-
     }
 
     function addNewToDoList(title: string) {
@@ -176,7 +175,6 @@ function App() {
                     }
                 </Grid>
             </div>
-
         </>
     );
 }

@@ -16,7 +16,7 @@ export type PropsTasksType = {
     setTaskFilter: (value: FilterType, toDoListId: string) => void
     addNewTask: (newTask: string, todolistId: string) => void
     editTask: (idTask: string, newTask: string, todolistId: string) => void
-    isCompletedChangeTask: (tasks: Array<TasksArrayType>, taskId: string, todolistId: string) => void
+    isCompletedChangeTask: (taskId: string, todolistId: string) => void
     removeTodolist: (todolistId: string) => void
     editListTitle: (title: string, todolistId: string) => void
 }
@@ -45,6 +45,35 @@ export const Card: React.FC<PropsTasksType> = (props) => {
         props.editListTitle(title, props.toDoListId)
     }
 
+    const tasksInCard = (props.tasks) ? props.tasks.map((li, ind, arr) => {
+
+            const onRemoveTaskHandler = () => {
+                props.removeTask(li.id, props.toDoListId)
+            }
+
+            const onIsCompletedClick = () => {
+                props.isCompletedChangeTask(li.id, props.toDoListId)
+            }
+
+            const editTask = (title: string) => {
+                props.editTask(li.id, title, props.toDoListId)
+            }
+
+            return (
+                <li key={li.id} className={li.done ? styles.complitedTask : ''}>
+                    <Checkbox checked={li.done} onChange={onIsCompletedClick}/>
+                    <EditableSpan title={li.task} onFinishEdit={editTask}/>
+                    <IconButton aria-label="delete"
+                                onClick={onRemoveTaskHandler}
+                                size={'small'}
+                                color="primary"
+                    >
+                        <DeleteIcon/>
+                    </IconButton>
+                </li>)
+        }
+    ) : ''
+
     return (
         <div className={styles.card}>
             <h1><EditableSpan title={props.title} onFinishEdit={editListTitle}/>
@@ -58,33 +87,9 @@ export const Card: React.FC<PropsTasksType> = (props) => {
             </h1>
             <AddItemForm addNewItem={addTask}/>
 
-            {props.tasks.map((li, ind, arr) => {
-                    const onRemoveTaskHandler = () => {
-                        props.removeTask(li.id, props.toDoListId)
-                    }
+            {tasksInCard}
 
-                    const onIsCompletedClick = () => {
-                        props.isCompletedChangeTask(props.tasks, li.id, props.toDoListId)
-                    }
 
-                    const editTask = (title: string) => {
-                        props.editTask(li.id, title, props.toDoListId)
-                    }
-
-                    return (
-                        <li key={li.id} className={li.done ? styles.complitedTask : ''}>
-                            <Checkbox checked={li.done} onChange={onIsCompletedClick}/>
-                            <EditableSpan title={li.task} onFinishEdit={editTask}/>
-                            <IconButton aria-label="delete"
-                                        onClick={onRemoveTaskHandler}
-                                        size={'small'}
-                                        color="primary"
-                            >
-                                <DeleteIcon/>
-                            </IconButton>
-                        </li>)
-                }
-            )}
             <Button onClick={onAllTaskFilter}
                     variant={(props.filter === 'all') ? 'contained' : 'outlined'}
                     size="small">

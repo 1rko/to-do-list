@@ -43,9 +43,10 @@ export const AddItemForm = (props: AddItemFormPropsType) => {
                    error={error ? !!styles.errorInput : !!''}
                    helperText={error ? error : ''}
         />
-        <IconButton>
-            <AddCircleIcon sx={{color: green[500]}}
-                           onClick={onAddNewItemHandler}/>
-        </IconButton>
+            <div onClick={onAddNewItemHandler} style={{ display:'inline'}}> {/*Создали блок перед IconButton, т.к. ему нельзя добавлять onClick*/}
+            <IconButton>
+                <AddCircleIcon sx={{color: green[500]}}/>
+            </IconButton>
+        </div>
     </div>
 }
