@@ -7,7 +7,10 @@ import AddCircleIcon from '@mui/icons-material/AddCircle';
 type AddItemFormPropsType = {
     addNewItem: (title: string) => void
 }
-export const AddItemForm = (props: AddItemFormPropsType) => {
+export const AddItemForm = React.memo((props: AddItemFormPropsType) => {
+
+    console.log('AddItemForm rendered')
+
     let [newTask, setNewItem] = useState('')
     let [error, setError] = useState<null | string>(null)
 
@@ -43,10 +46,11 @@ export const AddItemForm = (props: AddItemFormPropsType) => {
                    error={error ? !!styles.errorInput : !!''}
                    helperText={error ? error : ''}
         />
-            <div onClick={onAddNewItemHandler} style={{ display:'inline'}}> {/*Создали блок перед IconButton, т.к. ему нельзя добавлять onClick*/}
+        <div onClick={onAddNewItemHandler}
+             style={{display: 'inline'}}> {/*Создали блок перед IconButton, т.к. ему нельзя добавлять onClick*/}
             <IconButton>
                 <AddCircleIcon sx={{color: green[500]}}/>
             </IconButton>
         </div>
     </div>
-}
+})

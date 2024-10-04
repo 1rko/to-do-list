@@ -21,7 +21,7 @@ export type PropsTasksType = {
     editListTitle: (title: string, todolistId: string) => void
 }
 
-export const Card: React.FC<PropsTasksType> = (props) => {
+export const Card: React.FC<PropsTasksType> = React.memo((props) => {
 
     const onAllTaskFilter = () => {
         props.setTaskFilter('all', props.toDoListId)
@@ -46,33 +46,17 @@ export const Card: React.FC<PropsTasksType> = (props) => {
     }
 
     const tasksInCard = (props.tasks) ? props.tasks.map((li, ind, arr) => {
+            return   <OneTask key={li.id}
+                         task={li}
+                         toDoListId={props.toDoListId}
 
-            const onRemoveTaskHandler = () => {
-                props.removeTask(li.id, props.toDoListId)
+                         isCompletedChangeTask={props.isCompletedChangeTask}
+                         editTask={props.editTask}
+                         removeTask={props.removeTask}
+                />
             }
-
-            const onIsCompletedClick = () => {
-                props.isCompletedChangeTask(li.id, props.toDoListId)
-            }
-
-            const editTask = (title: string) => {
-                props.editTask(li.id, title, props.toDoListId)
-            }
-
-            return (
-                <li key={li.id} className={li.done ? styles.complitedTask : ''}>
-                    <Checkbox checked={li.done} onChange={onIsCompletedClick}/>
-                    <EditableSpan title={li.task} onFinishEdit={editTask}/>
-                    <IconButton aria-label="delete"
-                                onClick={onRemoveTaskHandler}
-                                size={'small'}
-                                color="primary"
-                    >
-                        <DeleteIcon/>
-                    </IconButton>
-                </li>)
-        }
-    ) : ''
+        ) :
+        ''
 
     return (
         <div className={styles.card}>
@@ -107,5 +91,43 @@ export const Card: React.FC<PropsTasksType> = (props) => {
             </Button>
 
         </div>)
+})
+
+export type  PropsOneTaskType = {
+    task:TasksArrayType
+    //id: string
+    toDoListId: string
+    //done: boolean
+    //title: string
+
+    isCompletedChangeTask: (taskId: string, todolistId: string) => void
+    editTask: (idTask: string, newTask: string, todolistId: string) => void
+    removeTask: (id: string, todolistId: string) => void
 }
 
+export const OneTask: React.FC<PropsOneTaskType> = React.memo( (props) => {
+    const onRemoveTaskHandler = () => {
+        props.removeTask(props.task.id, props.toDoListId)
+    }
+
+    const onIsCompletedClick = () => {
+        props.isCompletedChangeTask(props.task.id, props.toDoListId)
+    }
+
+    const editTask = (title: string) => {
+        props.editTask(props.task.id, title, props.toDoListId)
+    }
+
+    return (
+        <li className={props.task.done ? styles.complitedTask : ''}>
+            <Checkbox checked={props.task.done} onChange={onIsCompletedClick}/>
+            <EditableSpan title={props.task.task} onFinishEdit={editTask}/>
+            <IconButton aria-label="delete"
+                        onClick={onRemoveTaskHandler}
+                        size={'small'}
+                        color="primary"
+            >
+                <DeleteIcon/>
+            </IconButton>
+        </li>)
+})

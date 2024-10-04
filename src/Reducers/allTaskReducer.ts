@@ -1,15 +1,12 @@
 import {FilterType, TasksArrayType, toDoListsType} from "../App";
 import {v4 as uuidv4} from 'uuid';
-import {actions as toDoListActions} from "./toDoListReducer"        //импортируем actions из toDoListReducer, чтобы обработать action здесь
-
-let toDolistId1 = uuidv4()
-let toDolistId2 = uuidv4()
+import {actions as toDoListActions, toDolistId1, toDolistId2} from "./toDoListReducer"        //импортируем actions из toDoListReducer, чтобы обработать action здесь
 
 export type AllTasksType = {
     [key: string]: Array<TasksArrayType>
 }
 
-let state: AllTasksType = {
+let initialState: AllTasksType = {
     [toDolistId1]: [
         {id: uuidv4(), task: 'SocialNetwork', done: true},
         {id: uuidv4(), task: 'ToDoList', done: true},
@@ -21,7 +18,7 @@ let state: AllTasksType = {
     ]
 }
 
-export const allTaskReducer = (state: AllTasksType, action: ActionsType): AllTasksType => {
+export const allTaskReducer = (state: AllTasksType = initialState, action: ActionsType): AllTasksType => {
     switch (action.type) {
         case 'allTaskReducer/ADD-TASK': {
             return {
@@ -77,7 +74,7 @@ export const allTaskReducer = (state: AllTasksType, action: ActionsType): AllTas
 
         default:
             return state
-            console.log(`Error`);
+
     }
 }
 

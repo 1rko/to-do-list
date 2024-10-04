@@ -1,15 +1,15 @@
 import {FilterType, toDoListsType} from "../App";
 import {v4 as uuidv4} from 'uuid';
 
-let toDolistId1 = uuidv4()
-let toDolistId2 = uuidv4()
+export let toDolistId1 = uuidv4()
+export let toDolistId2 = uuidv4()
 
-let state: Array<toDoListsType> = [
+let initialState: Array<toDoListsType> = [
     {id: toDolistId1, title: 'Projects', filter: 'all'},
     {id: toDolistId2, title: 'Needs to learn', filter: 'all'},
 ]
 
-export const toDoListReducer = (state: Array<toDoListsType>, action: ActionsType): Array<toDoListsType> => {
+export const toDoListReducer = (state: Array<toDoListsType> = initialState, action: ActionsType): Array<toDoListsType> => {
     switch (action.type) {
         case 'toDoListReducer/ADD-NEW-TO-DO-LIST': {
             let newToDoList: toDoListsType = {
@@ -43,7 +43,7 @@ export const toDoListReducer = (state: Array<toDoListsType>, action: ActionsType
 
         default:
             return state
-            console.log(`Error`);
+
     }
 }
 
