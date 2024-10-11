@@ -16,7 +16,6 @@ export type TasksArrayType = {
     id: string
     task: string
     done: boolean
-
 }
 
 export type FilterType = 'all' | 'active' | 'completed'
